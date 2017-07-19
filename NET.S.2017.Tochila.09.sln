@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookLogic", "BookLogic\BookLogic.csproj", "{15FD3960-3E0B-4759-A94E-4BE71D221016}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleUI", "ConsoleUI\ConsoleUI.csproj", "{E13711D7-FC0B-4922-896C-41EE28479E85}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{15FD3960-3E0B-4759-A94E-4BE71D221016}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15FD3960-3E0B-4759-A94E-4BE71D221016}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15FD3960-3E0B-4759-A94E-4BE71D221016}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E13711D7-FC0B-4922-896C-41EE28479E85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E13711D7-FC0B-4922-896C-41EE28479E85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E13711D7-FC0B-4922-896C-41EE28479E85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E13711D7-FC0B-4922-896C-41EE28479E85}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -7,115 +7,78 @@ using System.Threading.Tasks;
 
 namespace BookLogic
 {
-    abstract class BookListStorage
+    public interface IBookListStorage
     {
-        public abstract void Save(params Book[] bookarray);
-        public abstract Book[] Load();
+        void Save(IEnumerable<Book> books);
+        List<Book> Load();
     }
-    interface IRepositoryFactory
+    public class BookListService
     {
-        BookListStorage Create();
-    }
-    interface IBookComparer
-    {
-        int CompareTo(Book lhs, Book rhs);
-    }
-    interface IBookValider
-    {
-        bool IsValid(Book arg);
-    }
-    class BookListService
-    {
-        private Book[] books;
-        private int count;
-        private IRepositoryFactory repFactory;
-        public BookListService(IRepositoryFactory rp,params Book[] bookarray)
+        private List<Book> books;
+        public BookListService(params Book[] bookarray)
         {
             //valid
+            books = new List<Book>();
             if (bookarray.Length != 0)
             {
-                books = new Book[bookarray.Length];
-                count = bookarray.Length;
-                Array.Copy(bookarray, books, bookarray.Length);
+                foreach (Book book in bookarray)
+                {
+                    books.Add(book);
+                }
             }
-            repFactory = rp;
         }
 
-        public void SaveBooks()
+        public void SaveBooks(IBookListStorage storage)
         {
-            BookListStorage storage = repFactory.Create();
             storage.Save(books);
         }
-        public void LoadBooks()
+        public void LoadBooks(IBookListStorage storage)
         {
-            BookListStorage storage = repFactory.Create();
             books = storage.Load();
         }
         public void AddBook(Book other)
         {
             foreach (Book book in books)
             {
-                if(book.Equals(other)) throw new ArgumentException("this book already exists");
+                if (book.Equals(other)) throw new ArgumentException("this book already exists");
             }
-            Add(other);
+            books.Add(other);
         }
         public void RemoveBook(Book other)
         {
-            for (int i = 0; i < books.Length; i++)
+            Book tmp = null;
+            foreach (Book book in books)
             {
-                if (books[i].Equals(other))
+                if (book.Equals(other))
                 {
-                    Remove(i);
-                    return;
+                    tmp = book;
+                    break;
                 }
             }
-            throw new ArgumentException("can't find this book");
+            if (tmp == null) throw new ArgumentException("can't find this book");
+            books.Remove(tmp);
+
         }
-        public Book FindBookByTag(IBookValider valider)
+        public Book FindBookByTag(Predicate<Book> predicate)
         {
-            for (int i = 0; i < books.Length; i++)
+            foreach (Book book in books)
             {
-                if (valider.IsValid(books[i])) return books[i];
+                if (predicate(book)) return book;
             }
             return null;
         }
-        public void SortBooksByTag(IBookComparer comparer)
+        public void SortBooksByTag(IComparer<Book> comparer)
         {
-            for (int i = 0; i < books.Length - 1; i++)
-            {
-                for (int j = 0; j < books.Length; j++)
-                {
-                    if(comparer.CompareTo(books[i],books[j])==1)
-                    Swap(ref books[i],ref books[j]);
-                }
-            }
+            books.Sort(comparer);
         }
-
-        private void Add(Book b)
+        public Book[] ToArray()
         {
-            if (count < books.Length)
+            List<Book> res = new List<Book>();
+            foreach (var book in books)
             {
-                books[count++] = b;
-                return;
+                if (book != null) res.Add(book);
             }
-            Book[] newbooks = new Book[books.Length*2];
-            Array.Copy(books,newbooks,books.Length);
-            newbooks[count++] = b;
-            books = newbooks;
-        }
-        private void Remove(int index)
-        {
-            for (int i = index; i < books.Length-1; i++)
-            {
-                books[i] = books[i + 1];
-            }
-            count--;
-        }
-        static void Swap(ref Book a, ref Book b)
-        {
-            Book tmp = a;
-            a = b;
-            b = tmp;
+            return res.ToArray();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,10 +10,38 @@ namespace BookLogic
     //ne uspel normal'no dodelat' i protestirovat' poka
     public class Book:IComparable,IComparable<Book>,IEquatable<Book>
     {
-        public string Title { get; set; }
-        public string Author { get; set; }
+        private string title;
+        private string author;
+        private string style;
+
+        public string Title
+        {
+            get { return title; }
+            set
+            {
+                if(string.IsNullOrEmpty(value)) throw new ArgumentException();
+                title = value;
+            }
+        }
+        public string Author
+        {
+            get { return author; }
+            set
+            {
+                if (string.IsNullOrEmpty(value)) throw new ArgumentException();
+                author = value;
+            }
+        }
+        public string Style
+        {
+            get { return style; }
+            set
+            {
+                if (string.IsNullOrEmpty(value)) throw new ArgumentException();
+                style = value;
+            }
+        }
         public int PublishingYear { get; set; }
-        public string Style { get; set; }
         int IComparable.CompareTo(object other)
         {
             if (ReferenceEquals(null, other)) return 1;
@@ -31,6 +60,30 @@ namespace BookLogic
             if (this.Title != other.Title || this.Author != other.Author ||
                 this.PublishingYear != other.PublishingYear) return false;
             return true;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (this.GetType() != obj.GetType()) return false;
+            return Equals((Book) obj);
+        }
+
+        public override string ToString()
+        {
+            return Title.ToString() + "____Author: " + Author.ToString() +
+           "____Genre :"+ Style.ToString() + "____Publishing year:" + PublishingYear.ToString();
+        }
+
+        public static bool operator ==(Book lhs,Book rhs)
+        {
+            if (ReferenceEquals(lhs, null)) return false;
+            if (ReferenceEquals(lhs, rhs)) return true;
+            return lhs.Equals(rhs);
+        }
+        public static bool operator !=(Book lhs, Book rhs)
+        {
+            return !object.Equals(lhs,rhs);
         }
     }
 }

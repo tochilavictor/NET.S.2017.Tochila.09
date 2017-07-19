@@ -7,51 +7,43 @@ using System.Threading.Tasks;
 
 namespace BookLogic
 {
-    class BinaryBookStorage: BookListStorage, IRepositoryFactory
+    public class BinaryBookStorage : IBookListStorage
     {
-        private FileStream fread;
-        private FileStream fwrite;
-        private BinaryReader br;
-        private BinaryWriter bw;
-        private const int MaxSize = 100;
-        public BookListStorage Create()
+        private string path;
+        public BinaryBookStorage(string path)
         {
-            fwrite = new FileStream("D:\\1.txt", FileMode.Create);
-            bw = new BinaryWriter(fwrite);
-            fread = new FileStream("D:\\1.txt", FileMode.Open);
-            br = new BinaryReader(fread);
-            return this;
+            this.path = path;
         }
-        public override Book[] Load()
+        public List<Book> Load()
         {
-            Book[] tempRes = new Book[MaxSize];
-            int i = 0;
-            while (fread.Position < fread.Length && i<MaxSize)
+            FileStream fread = new FileStream(path, FileMode.Open);
+            BinaryReader br = new BinaryReader(fread);
+            List<Book> boloboks = new List<Book>();
+            while (fread.Position < fread.Length)
             {
                 string author = br.ReadString();
-                string title= br.ReadString();
-                string style= br.ReadString();
+                string title = br.ReadString();
+                string style = br.ReadString();
                 int publYear = br.ReadInt32();
-                Book tempBook= new Book() {Author = author,PublishingYear = publYear,Style = style,Title = title};
-                tempRes[i] = tempBook;
-                i++;
+                Book tempBook = new Book() { Author = author, PublishingYear = publYear, Style = style, Title = title };
+                boloboks.Add(tempBook);
             }
-            Book[] res = new Book[i];
-            Array.Copy(tempRes,res,res.Length);
-            return res;
+            br.Close();
+            return boloboks;
         }
 
-        public override void Save(params Book[] bookarray)
+        public void Save(IEnumerable<Book> bookarray)
         {
-            int i = 0;
-            while (i < bookarray.Length && bookarray.Length < MaxSize)
+            FileStream fwrite = new FileStream(path, FileMode.Create);
+            BinaryWriter bw = new BinaryWriter(fwrite);
+            foreach (Book book in bookarray)
             {
-                bw.Write(bookarray[i].Author);
-                bw.Write(bookarray[i].Title);
-                bw.Write(bookarray[i].Style);
-                bw.Write(bookarray[i].PublishingYear);
-                i++;
+                bw.Write(book.Author);
+                bw.Write(book.Title);
+                bw.Write(book.Style);
+                bw.Write(book.PublishingYear);
             }
+            bw.Close();
         }
     }
 }
