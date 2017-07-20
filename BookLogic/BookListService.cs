@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NLog;
 
 namespace BookLogic
 {
@@ -14,10 +15,20 @@ namespace BookLogic
     }
     public class BookListService
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         private List<Book> books;
         public BookListService(params Book[] bookarray)
         {
-            //valid
+            try
+            {
+                    if (bookarray == null)
+                    throw new ArgumentNullException();
+            }
+            catch(ArgumentNullException ex)
+            {
+                logger.Error(ex.Message);
+                logger.Debug(ex.StackTrace);
+            }
             books = new List<Book>();
             if (bookarray.Length != 0)
             {
@@ -30,11 +41,52 @@ namespace BookLogic
 
         public void SaveBooks(IBookListStorage storage)
         {
-            storage.Save(books);
+            try
+            {
+                storage.Save(books);
+            }
+            catch (System.IO.DriveNotFoundException ex)
+            {
+                logger.Info(ex.GetType());
+                logger.Error(ex.Message);
+                logger.Trace(ex.StackTrace);
+                throw new ArgumentException("invalid path", ex);
+            }
+            catch (System.IO.DirectoryNotFoundException ex)
+            {
+                logger.Info(ex.GetType());
+                logger.Error(ex.Message);
+                logger.Trace(ex.StackTrace);
+                throw new ArgumentException("invalid path", ex);
+            }
         }
         public void LoadBooks(IBookListStorage storage)
         {
-            books = storage.Load();
+            try
+            {
+                books = storage.Load();
+            }
+            catch (System.IO.DriveNotFoundException ex)
+            {
+                logger.Info(ex.GetType());
+                logger.Error(ex.Message);
+                logger.Trace(ex.StackTrace);
+                throw new ArgumentException("invalid path", ex);
+            }
+            catch (System.IO.DirectoryNotFoundException ex)
+            {
+                logger.Info(ex.GetType());
+                logger.Error(ex.Message);
+                logger.Trace(ex.StackTrace);
+                throw new ArgumentException("invalid path", ex);
+            }
+            catch (System.IO.FileNotFoundException ex)
+            {
+                logger.Info(ex.GetType());
+                logger.Error(ex.Message);
+                logger.Trace(ex.StackTrace);
+                throw new ArgumentException("invalid path", ex);
+            }
         }
         public void AddBook(Book other)
         {
@@ -79,6 +131,13 @@ namespace BookLogic
                 if (book != null) res.Add(book);
             }
             return res.ToArray();
+        }
+        static void ValidateArray(Book[] array)
+        {
+            if (array == null)
+                throw new ArgumentNullException();
+            if (array.Length == 0)
+                throw new ArgumentException("Empty array");
         }
     }
 }

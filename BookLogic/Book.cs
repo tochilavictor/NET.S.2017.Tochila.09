@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace BookLogic
 {
-    //ne uspel normal'no dodelat' i protestirovat' poka
     public class Book:IComparable,IComparable<Book>,IEquatable<Book>
     {
         private string title;

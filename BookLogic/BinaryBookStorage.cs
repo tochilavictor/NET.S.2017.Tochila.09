@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NLog;
 
 namespace BookLogic
 {
@@ -12,6 +13,7 @@ namespace BookLogic
         private string path;
         public BinaryBookStorage(string path)
         {
+            if(string.IsNullOrEmpty(path)) throw new ArgumentException($"Ivalid {nameof(path)}");
             this.path = path;
         }
         public List<Book> Load()
