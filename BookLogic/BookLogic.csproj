@@ -44,14 +44,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BinaryBookStorage.cs" />
+    <Compile Include="Storages\BinaryBookStorage.cs" />
     <Compile Include="Book.cs" />
     <Compile Include="BookListService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Storages\BinarySerializatorStorage.cs" />
+    <Compile Include="Storages\XmlStorage.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>

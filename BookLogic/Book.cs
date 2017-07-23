@@ -2,16 +2,19 @@
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BookLogic
 {
-    public class Book:IComparable,IComparable<Book>,IEquatable<Book>
+    [Serializable]
+    public class Book:IComparable,IComparable<Book>,IEquatable<Book>//, ISerializable
     {
         private string title;
         private string author;
         private string style;
+        private int year;
 
         public string Title
         {
@@ -40,7 +43,15 @@ namespace BookLogic
                 style = value;
             }
         }
-        public int PublishingYear { get; set; }
+        public int PublishingYear
+        {
+            get { return year; }
+            set
+            {
+                if (year<0 && year>DateTime.Now.Year) throw new ArgumentException();
+                year = value;
+            }
+        }
         int IComparable.CompareTo(object other)
         {
             if (ReferenceEquals(null, other)) return 1;
@@ -67,7 +78,6 @@ namespace BookLogic
             if (this.GetType() != obj.GetType()) return false;
             return Equals((Book) obj);
         }
-
         public override string ToString()
         {
             return Title.ToString() + "____Author: " + Author.ToString() +

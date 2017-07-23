@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BookLogic;
+using BookLogic.Storages;
 using NLog;
 
 namespace ConsoleUI
@@ -41,44 +42,50 @@ namespace ConsoleUI
                 boeks[2] = new Book() {Author = "aaa", Title = "aaa", PublishingYear = 111, Style = "aaa"};
                 boeks[3] = new Book() {Author = "a123123aa", Title = "223aaa", PublishingYear = 1221, Style = "koala"};
                 BookListService serv = new BookListService(boeks);
-                Book bbb = new Book()
-                {
-                    Author = "Bochilka2",
-                    Title = "karamba2",
-                    PublishingYear = 20127,
-                    Style = "Rofel2"
-                };
-                serv.AddBook(bbb);
-                Book bbb2 = new Book()
-                {
-                    Author = "Eochilka22",
-                    Title = "karamba2",
-                    PublishingYear = 20127,
-                    Style = "Rofel2"
-                };
-                serv.AddBook(bbb2);
-                serv.RemoveBook(bbb);
-                serv.SortBooksByTag(new BookNamedComparer());
-                Console.WriteLine(serv.FindBookByTag(x => x.PublishingYear == 1909));
-                serv.SaveBooks(new BinaryBookStorage("K:\\books.txt"));
-
-                BookListService service2 = new BookListService();
-                service2.LoadBooks(new BinaryBookStorage("D:\\books2.txt"));
-                foreach (Book book in service2.ToArray())
+                serv.SaveBooks(new BinarySerializatorStorage("D:\\111.txt"));
+                serv.LoadBooks(new BinarySerializatorStorage("D:\\111.txt"));
+                foreach (Book book in serv.ToArray())
                 {
                     Console.WriteLine(book);
                 }
+                //Book bbb = new Book()
+                //{
+                //    Author = "Bochilka2",
+                //    Title = "karamba2",
+                //    PublishingYear = 20127,
+                //    Style = "Rofel2"
+                //};
+                //serv.AddBook(bbb);
+                //Book bbb2 = new Book()
+                //{
+                //    Author = "Eochilka22",
+                //    Title = "karamba2",
+                //    PublishingYear = 20127,
+                //    Style = "Rofel2"
+                //};
+                //serv.AddBook(bbb2);
+                //serv.RemoveBook(bbb);
+                //serv.SortBooksByTag(new BookNamedComparer());
+                //Console.WriteLine(serv.FindBookByTag(x => x.PublishingYear == 1909));
+                //serv.SaveBooks(new BinaryBookStorage("K:\\books.txt"));
+
+                //BookListService service2 = new BookListService();
+                //service2.LoadBooks(new BinaryBookStorage("D:\\books2.txt"));
+                //foreach (Book book in service2.ToArray())
+                //{
+                //    Console.WriteLine(book);
+                //}
             }
-            catch (ArgumentException e)
+            catch (AccessViolationException e)
             {
                 logger.Trace(e.TargetSite);
                 logger.Trace(e.Message);
             }
-            catch (Exception e)
-            {
-                logger.Info("Unhandled Exception");
-                logger.Error(e);
-            }
+            //catch (Exception e)
+            //{
+            //    logger.Info("Unhandled Exception");
+            //    logger.Error(e);
+            //}
             Console.ReadKey();
         }
     }
